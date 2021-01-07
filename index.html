@@ -15,7 +15,7 @@
 <link rel="mask-icon" type="" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
 
 
-  <title>CodePen - 2101-1</title>
+  <title>CodePen - 2102-1</title>
   
   
   
@@ -24,17 +24,17 @@
 .student{
   text-align:center;
   border: ridge;
-  background: orange;
+  background: red;
   margin: auto;
   width: 20%;
 }
 #pickStudent{
-  background: orange;
+  background: green;
   border: ridge;
 }
 #picked{
   border: ridge;
-  background: lightBlue
+  background: lightblue
 }
 </style>
 
@@ -55,12 +55,7 @@
     <span>William Gross</span>
   </div>
   
-  <div class="student" id="gunnisonsweeney">
-    <span>Gunnison Sweeney</span>
-  </div>
-  <div class="student" id="colehansen">
-    <span>Cole Hansen</span>
-  </div>
+
 </div>
 
 <button id="pickStudent">Random Student</button>
@@ -82,6 +77,8 @@ function makeStudent(username,first,last,gradelevel){
   student.first = first;
   student.last = last;
   student.gradelevel = gradelevel;
+  student.clickcount = 0;
+  student.lasttime = Date.now();
   return student;
 }
 
@@ -91,19 +88,49 @@ students.push(makeStudent("gunnisonsweeney","Gunnison","Sweeney","9"));
 students.push(makeStudent("colehansen","Cole","Hansen","9"));
 console.log(students);
 
-function pickStudent(){
-  let randomStudentNum = Math.floor(Math.random()*students.length);
-  console.log(randomStudentNum);
+function pickStudent() {
+  let randomStudentNum = Math.floor(Math.random() * students.length);
   let student = students[randomStudentNum];
-  console.log(student);
-  document.getElementById("picked").textContent = student.first + " " + student.last;
+  document.getElementById("picked").textContent =
+    student.first + " " + student.last;
 }
 
 pickStudent();
 
 let element = document.getElementById("pickStudent");
 
-element.addEventListener("click",pickStudent);
+element.addEventListener("click", pickStudent);
+
+function renderList() {
+  console.log("renderList");
+  students.sort(function (a, b) {
+    return b.clickcount - a.clickcount;
+  });
+  let content = "";
+
+  for (let i = 0; i < students.length; i++) {
+    content += `<div class="student" id="${students[i].username}"> ${students[i].first} ${students[i].last} ${students[i].clickcount}</div>\n`;
+  }
+
+  let element = document.getElementById("container");
+  element.innerHTML = content;
+}
+
+function listclick(e) {
+  console.log(e.target.id);
+
+  for (let i = 0; i < students.length; i++) {
+    if (students[i].username == e.target.id) {
+      students[i].clickcount++;
+    }
+  }
+
+  renderList();
+}
+
+let renderclick = document.getElementById("container");
+renderclick.addEventListener("click", listclick);
+renderList();
     </script>
 
   
@@ -111,4 +138,6 @@ element.addEventListener("click",pickStudent);
 </body>
 
 </html>
+ 
+
  
